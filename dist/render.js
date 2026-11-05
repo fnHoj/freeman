@@ -52,7 +52,7 @@ function render_note(n, t, ar, x, y, o) {
         if (d <= 0) {
             const v = SWING.map(v => v.add(new Vec3(1, 0, d * 2)).rotX(n.swing).rotY(-n.sy).rotZ(n.sx).add(new Vec3(n.x - x, n.y - y, 0)).rotZ(-o).pm());
             const w = (Math.exp(d * 8) - Math.exp(-1.6)) / (1 - Math.exp(-1.6));
-            ctx.lineWidth = 4 + 12 * w;
+            ctx.lineWidth = 4 + 16 * w;
             ctx.strokeStyle = `alpha(from #fff / ${w})`;
             for (let i = 0; i < v.length; i++) {
                 segment(v[i ? i - 1 : v.length - 1], v[i]);
@@ -75,7 +75,7 @@ function render_note(n, t, ar, x, y, o) {
         if (d <= 0) {
             const v = PUNCH.map(v => v.add(new Vec3(1 - d * 2, 0, 0)).rotY(-n.sy).rotZ(n.sx).add(new Vec3(n.x - x, n.y - y, 0)).rotZ(-o).pm());
             const w = (Math.exp(d * 8) - Math.exp(-2.4)) / (1 - Math.exp(-2.4));
-            ctx.lineWidth = 4 + 12 * w;
+            ctx.lineWidth = 4 + 16 * w;
             ctx.strokeStyle = `alpha(from #fff / ${w})`;
             for (let i = 0; i < v.length; i++) {
                 segment(v[i ? i - 1 : v.length - 1], v[i]);
