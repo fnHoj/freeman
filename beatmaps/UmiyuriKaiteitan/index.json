@@ -1,0 +1,11 @@
+{
+    "title": "ウミユリ海底譚",
+    "artist": "n-buna",
+    "music": "UmiyuriKaiteitan.mp3",
+    "bpm": 240,
+    "offset": 380,
+    "x": 2.1,
+    "y": 0.4,
+    "o": 135,
+    "diffs": ["ovo", "standard"]
+}
