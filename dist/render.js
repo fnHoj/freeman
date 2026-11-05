@@ -130,7 +130,7 @@ function render_beatmap(b, t) {
     }
     mctx.stroke();
     mctx.strokeStyle = "#fff";
-    mctx.lineWidth = 4;
+    mctx.lineWidth = 6;
     mctx.beginPath();
     mctx.moveTo(50 * x, 50 * y);
     for (let i = 0.125; i < 1; i += 0.125) {
