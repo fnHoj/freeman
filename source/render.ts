@@ -110,19 +110,19 @@ function render_beatmap(b: Beatmap, t: number) {
     ctx.lineWidth = 4;
     mctx.lineCap = "round";
     mctx.fillStyle = "#000";
-    mctx.fillRect(0, 0, 450, 300);
+    mctx.fillRect(0, 0, 350, 350);
     mctx.strokeStyle = "#333";
     mctx.lineWidth = 2;
     mctx.beginPath();
-    for (let i = 0; i <= 9; i++) {
-        segment(new Vec3(-y, 1, i - x).rotY(-o), new Vec3(6 - y, 1, i - x).rotY(-o));
+    for (let i = 0; i <= 7; i++) {
+        segment(new Vec3(-y, 1, i - x).rotY(-o), new Vec3(7 - y, 1, i - x).rotY(-o));
         mctx.moveTo(i * 50, 0);
-        mctx.lineTo(i * 50, 300);
+        mctx.lineTo(i * 50, 350);
     }
-    for (let i = 0; i <= 6; i++) {
-        segment(new Vec3(i - y, 1, -x).rotY(-o), new Vec3(i - y, 1, 9 - x).rotY(-o));
+    for (let i = 0; i <= 7; i++) {
+        segment(new Vec3(i - y, 1, -x).rotY(-o), new Vec3(i - y, 1, 7 - x).rotY(-o));
         mctx.moveTo(0, i * 50);
-        mctx.lineTo(450, i * 50);
+        mctx.lineTo(350, i * 50);
     }
     mctx.stroke();
     ctx.lineWidth = 32;
@@ -164,7 +164,7 @@ function render_beatmap(b: Beatmap, t: number) {
         let p: Vec3 | null = t < h[0].t ? hold_at(h, h[0].t, b.trail).sub(new Vec3(x, y)).pm().rotY(-o) : null;
         for (let i = 0; ; i++) {
             let ht = t + i / 2;
-            if (ht >= t + b.at)
+            if (ht >= t + b.at * 2)
                 break;
             if (ht < h[0].t)
                 continue;
@@ -172,7 +172,7 @@ function render_beatmap(b: Beatmap, t: number) {
                 ht = h[h.length - 1].t
             const p1 = hold_at(h, ht, b.trail).sub(new Vec3(x, y)).pm().rotY(-o);
             if (p) {
-                ctx.strokeStyle = `alpha(from #fff / ${(t >= h[0].t ? 1 : 0.6) * (1 - (ht - t) / b.at)})`;
+                ctx.strokeStyle = `alpha(from #fff / ${(t >= h[0].t ? 1 : 0.6) * (1 - (ht - t) / (b.at))})`;
                 segment(p, p1);
             }
             p = p1;
