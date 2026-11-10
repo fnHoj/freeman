@@ -21,10 +21,8 @@ function segment(v0, v1, f = fl) {
     const p1 = v1.z > 0 ? v1.proj() :
         p0.add(new Vec2(v1.x * v0.z - v0.x * v1.z, v1.y * v0.z - v0.y * v1.z).mul(100));
     ctx.lineCap = "round";
-    ctx.beginPath();
     ctx.moveTo(640 + f * p0.x, 360 + f * p0.y);
     ctx.lineTo(640 + f * p1.x, 360 + f * p1.y);
-    ctx.stroke();
 }
 const PUNCH = [
     new Vec3(0, 0.1, 0),
@@ -54,22 +52,28 @@ function render_note(n, t, ar, x, y, o) {
             const w = (Math.exp(d * 8) - Math.exp(-1.6)) / (1 - Math.exp(-1.6));
             ctx.lineWidth = 4 + 16 * w;
             ctx.strokeStyle = `alpha(from #fff / ${w})`;
+            ctx.beginPath();
             for (let i = 0; i < v.length; i++) {
                 segment(v[i ? i - 1 : v.length - 1], v[i]);
             }
+            ctx.stroke();
             return;
         }
         let v = SWING.map(v => v.rotX(n.swing).add(new Vec3(1, 0, 0)).rotY(-n.sy).rotZ(n.sx).add(new Vec3(n.x - x, n.y - y, 0)).rotZ(-o).pm());
         ctx.lineWidth = 8;
         ctx.strokeStyle = `alpha(from #f79 / ${1 - d})`;
+        ctx.beginPath();
         for (let i = 0; i < v.length; i++) {
             segment(v[i ? i - 1 : v.length - 1], v[i]);
         }
+        ctx.stroke();
         v = SWING.map(v => v.rotX(n.swing).mul(1.1 + d * 4).add(new Vec3(1, 0, 0)).rotY(-n.sy).rotZ(n.sx).add(new Vec3(n.x - x, n.y - y, 0)).rotZ(-o).pm());
         ctx.lineWidth = 4;
+        ctx.beginPath();
         for (let i = 0; i < v.length; i++) {
             segment(v[i ? i - 1 : v.length - 1], v[i]);
         }
+        ctx.stroke();
     }
     else {
         if (d <= 0) {
@@ -77,22 +81,28 @@ function render_note(n, t, ar, x, y, o) {
             const w = (Math.exp(d * 8) - Math.exp(-2.4)) / (1 - Math.exp(-2.4));
             ctx.lineWidth = 4 + 16 * w;
             ctx.strokeStyle = `alpha(from #fff / ${w})`;
+            ctx.beginPath();
             for (let i = 0; i < v.length; i++) {
                 segment(v[i ? i - 1 : v.length - 1], v[i]);
             }
+            ctx.stroke();
             return;
         }
         let v = PUNCH.map(v => v.add(new Vec3(1, 0, 0)).rotY(-n.sy).rotZ(n.sx).add(new Vec3(n.x - x, n.y - y, 0)).rotZ(-o).pm());
         ctx.lineWidth = 8;
         ctx.strokeStyle = `alpha(from #7bf / ${1 - d})`;
+        ctx.beginPath();
         for (let i = 0; i < v.length; i++) {
             segment(v[i ? i - 1 : v.length - 1], v[i]);
         }
+        ctx.stroke();
         v = PUNCH.map(v => v.mul(1.1 + d * 4).add(new Vec3(1, 0, 0)).rotY(-n.sy).rotZ(n.sx).add(new Vec3(n.x - x, n.y - y, 0)).rotZ(-o).pm());
         ctx.lineWidth = 4;
+        ctx.beginPath();
         for (let i = 0; i < v.length; i++) {
             segment(v[i ? i - 1 : v.length - 1], v[i]);
         }
+        ctx.stroke();
     }
 }
 function render_beatmap(b, t) {
@@ -108,6 +118,7 @@ function render_beatmap(b, t) {
     mctx.strokeStyle = "#333";
     mctx.lineWidth = 2;
     mctx.beginPath();
+    ctx.beginPath();
     for (let i = 0; i <= 7; i++) {
         segment(new Vec3(-y, 1, i - x).rotY(-o), new Vec3(7 - y, 1, i - x).rotY(-o));
         mctx.moveTo(i * 50, 0);
@@ -118,6 +129,7 @@ function render_beatmap(b, t) {
         mctx.moveTo(0, i * 50);
         mctx.lineTo(350, i * 50);
     }
+    ctx.stroke();
     mctx.stroke();
     ctx.lineWidth = 32;
     mctx.beginPath();
@@ -141,7 +153,9 @@ function render_beatmap(b, t) {
         mctx.strokeStyle = `alpha(from #fff / ${1 - i})`;
         mctx.beginPath();
         mctx.moveTo(50 * p.x, 50 * p.y);
+        ctx.beginPath();
         segment(new Vec3(cy - y, 1, cx - x).rotY(-o), new Vec3(p.y - y, 1, p.x - x).rotY(-o));
+        ctx.stroke();
         cx = p.x;
         cy = p.y;
     }
@@ -167,7 +181,9 @@ function render_beatmap(b, t) {
             const p1 = hold_at(h, ht, b.trail).sub(new Vec3(x, y)).pm().rotY(-o);
             if (p) {
                 ctx.strokeStyle = `alpha(from #fff / ${(t >= h[0].t ? 1 : 0.6) * (1 - (ht - t) / (b.at))})`;
+                ctx.beginPath();
                 segment(p, p1);
+                ctx.stroke();
             }
             p = p1;
         }
