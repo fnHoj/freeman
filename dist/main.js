@@ -1,29 +1,28 @@
 "use strict";
-const tttt = document.getElementById("t");
-const pppp = document.getElementById("p");
-let t = Number.parseFloat(tttt.value);
+const ti = document.getElementById("t");
+const pi = document.getElementById("p");
+let t = Number.parseFloat(ti.value);
 let playing = false;
 let startTime = -Infinity;
+let speed = 1;
 const audioContext = new AudioContext();
 let audioBuffer = null;
 let source = null;
 load_song("UmiyuriKaiteitan").then(async (s) => {
-    function play(t) {
+    function play() {
         const offset = s.offset / 1000 + t * 60 / s.bpm;
         source = audioContext.createBufferSource();
         source.buffer = audioBuffer;
         source.connect(audioContext.destination);
-        startTime = audioContext.currentTime - offset;
+        source.playbackRate.value = speed;
+        startTime = audioContext.currentTime * speed - offset;
         if (offset > 0)
             source.start(0, offset);
         else
-            source.start(startTime, 0);
+            source.start(startTime / speed, 0);
+        pi.checked = playing = true;
     }
-    const buf = await fetch(`/assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
-    audioBuffer = await audioContext.decodeAudioData(buf);
-    tttt.addEventListener("input", () => {
-        t = Number.parseFloat(tttt.value);
-        pppp.checked = playing = false;
+    function stop() {
         if (source) {
             try {
                 source.stop();
@@ -35,27 +34,59 @@ load_song("UmiyuriKaiteitan").then(async (s) => {
             catch (e) { }
             source = null;
         }
+        pi.checked = playing = false;
+    }
+    const buf = await fetch(`/assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
+    audioBuffer = await audioContext.decodeAudioData(buf);
+    ti.addEventListener("input", () => {
+        t = Number.parseFloat(ti.value);
+        if (playing) {
+            stop();
+            play();
+        }
     });
-    pppp.addEventListener("input", () => {
-        if (playing = pppp.checked)
-            play(t);
-        else if (source) {
-            try {
-                source.stop();
-            }
-            catch (e) { }
-            try {
-                source.disconnect();
-            }
-            catch (e) { }
-            source = null;
+    ti.addEventListener("dblclick", () => playing ? stop() : play());
+    pi.addEventListener("input", () => (playing = pi.checked) ? play() : stop());
+    document.getElementById("s12").addEventListener("input", () => {
+        speed = 0.5;
+        if (playing) {
+            stop();
+            play();
+        }
+    });
+    document.getElementById("s34").addEventListener("input", () => {
+        speed = 0.75;
+        if (playing) {
+            stop();
+            play();
+        }
+    });
+    document.getElementById("s1").addEventListener("input", () => {
+        speed = 1;
+        if (playing) {
+            stop();
+            play();
+        }
+    });
+    document.getElementById("s54").addEventListener("input", () => {
+        speed = 1.25;
+        if (playing) {
+            stop();
+            play();
+        }
+    });
+    document.getElementById("s32").addEventListener("input", () => {
+        speed = 1.5;
+        if (playing) {
+            stop();
+            play();
         }
     });
     function frame() {
         requestAnimationFrame(frame);
         render_beatmap(s.diffs[0], t);
         if (playing)
-            tttt.value = t = (1000 * (audioContext.currentTime - startTime) - s.offset) * (s.bpm / 60000);
+            ti.value = t = (1000 * (audioContext.currentTime * speed - startTime) - s.offset) * (s.bpm / 60000);
     }
     frame();
 });

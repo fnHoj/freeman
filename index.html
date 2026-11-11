@@ -8,6 +8,9 @@
         :root {
             color-scheme: dark;
             text-align: center;
+            font-family: monospace;
+            font-size: 24px;
+            user-select: none;
         }
         canvas {
             border: 1px solid #fff;
@@ -18,12 +21,89 @@
             display: block;
             inline-size: calc(100% - 16px);
         }
+        #p, #s12, #s34, #s1, #s54, #s32 {
+            display: none;
+        }
+        label {
+            display: inline-block;
+            background-color: #333;
+            border-radius: 4px;
+            block-size: 1.5em;
+            padding-block: 0.1em;
+            padding-inline: 0.25em;
+            vertical-align: middle;
+        }
+        label::before {
+            vertical-align: sub;
+        }
+        label:hover {
+            filter: invert(100%) brightness(75%) invert(100%);
+        }
+        #p:not(:checked) ~ #pl::before {
+            content: "▶︎ 播放";
+        }
+        #p:checked ~ #pl::before {
+            content: "◼︎ 暂停";
+        }
+        #sl12::before {
+            content: "0.5x";
+        }
+        #sl34::before {
+            content: "0.75x";
+        }
+        #sl1::before {
+            content: "1x";
+        }
+        #sl54::before {
+            content: "1.25x";
+        }
+        #sl32::before {
+            content: "1.5x";
+        }
+        #pl {
+            padding-inline: 1em;
+        }
+        #p:checked ~ #pl {
+            background-color: #9cf;
+            color: #000;
+        }
+        #s12:checked ~ #sl12 {
+            background-color: #9cf;
+            color: #000;
+        }
+        #s34:checked ~ #sl34 {
+            background-color: #9cf;
+            color: #000;
+        }
+        #s1:checked ~ #sl1 {
+            background-color: #9cf;
+            color: #000;
+        }
+        #s54:checked ~ #sl54 {
+            background-color: #9cf;
+            color: #000;
+        }
+        #s32:checked ~ #sl32 {
+            background-color: #9cf;
+            color: #000;
+        }
     </style>
 </head>
 <body>
     <canvas id="canvas" width="1280px" height="720px"></canvas>
     <input id="t" type="range" min="-8" max="532" step="0.1" value="-8"/>
     <input id="p" type="checkbox"/>
+    <input id="s12" name="s" type="radio"/>
+    <input id="s34" name="s" type="radio"/>
+    <input id="s1" name="s" type="radio" checked="checked"/>
+    <input id="s54" name="s" type="radio"/>
+    <input id="s32" name="s" type="radio"/>
+    <label id="pl" for="p"></label>
+    <label id="sl12" for="s12"></label>
+    <label id="sl34" for="s34"></label>
+    <label id="sl1" for="s1"></label>
+    <label id="sl54" for="s54"></label>
+    <label id="sl32" for="s32"></label>
     <canvas id="map" width="350px" height="350px"></canvas>
 
     <script src="dist/vec.js"></script>
