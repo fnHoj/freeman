@@ -157,15 +157,17 @@ async function load_song(name) {
             const c1 = Math.cos(deg2rad(o + w * dt));
             const s1 = Math.sin(deg2rad(o + w * dt));
             const tr = new TrailNode(x, y, v, v1, o, w, t, dt);
-            beatmap.trail.push(tr);
-            ({ x, y, o } = tr.at(t = t1));
-            c = c1;
-            s = s1;
+            if (dt > 1e-8) {
+                beatmap.trail.push(tr);
+                ({ x, y, o } = tr.at(t = t1));
+                c = c1;
+                s = s1;
+            }
             v = vn;
             if (typeof n.w === "number")
                 w = n.w;
         }
-        beatmap.trail.push(new TrailNode(x, y, 0, 0, o, o, t, t + 1e4));
+        beatmap.trail.push(new TrailNode(x, y, 0, 0, o, 0, t, 1e4));
         for (const n of bdata.notes) {
             const { x, y, o } = stamp(beatmap.trail, n.t);
             beatmap.notes.push(new Note(n.t, o + n.x, n.y, n.rh, n.swing, x, y));
