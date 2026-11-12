@@ -198,15 +198,20 @@ function render_beatmap(b: Beatmap, t: number) {
     ctx.stroke();
     mctx.stroke();
     ctx.lineWidth = 32;
-    mctx.beginPath();
-    for (let tt = -64; tt <= 64; tt++) {
-        const {x, y} = stamp(b.trail, t + tt);
-        if (tt === -64)
-            mctx.moveTo(50 * x, 50 * y);
-        else
+    mctx.strokeStyle = "#444";
+    for (let i = 0; i < b.trail.length; i++) {
+        mctx.beginPath();
+        let t = b.trail[i].t0;
+        let {x, y} = stamp(b.trail, t);
+        mctx.moveTo(50 * x, 50 * y);
+        for (; t < b.trail[i].t1; t++) {
+            const {x, y} = stamp(b.trail, t);
             mctx.lineTo(50 * x, 50 * y);
+        }
+        ({x, y} = stamp(b.trail, b.trail[i].t1));
+        mctx.lineTo(50 * x, 50 * y);
+        mctx.stroke();
     }
-    mctx.stroke();
     mctx.strokeStyle = "#fff";
     mctx.lineWidth = 6;
     mctx.beginPath();
