@@ -111,6 +111,66 @@ function render_note(n: Note, t: number, ar: number, x: number, y: number, o: nu
     }
 }
 
+function render_hold(h: Direction[], b: Beatmap, x: number, y: number, o: number) {
+    if (!h || t + b.at < h[0].t)
+        return;
+    const t1 = (t + b.at) * 2 - h[0].t;
+    const v = h.map(d => {
+        const {x: hx, y: hy} = stamp(b.trail, d.t);
+        return new Vec3(
+            Math.sin(deg2rad(d.sx)) * Math.cos(deg2rad(d.sy)) + hy - y,
+            Math.sin(deg2rad(d.sy)),
+            Math.cos(deg2rad(d.sx)) * Math.cos(deg2rad(d.sy)) + hx - x
+        ).rotY(-o);
+    });
+    let ct = t, e = false, pt = Math.max(t, h[0].t), p = t < h[0].t ? v[0] : null;
+    ctx.lineWidth = 16;
+    // ctx.strokeStyle = t >= h[0].t ? "#fffc" : `alpha(from #fff / ${0.48 * (1 - (h[0].t - t) / b.at)})`;
+    ctx.beginPath();
+    while (ct < h[0].t)
+        ct += 0.5;
+    for (let i = 0; i < h.length - 1; i++) {
+        if (t >= h[i + 1].t)
+            continue;
+        while (ct < h[i + 1].t) {
+            const u = (ct - h[i].t) / (h[i + 1].t - h[i].t);
+            const p1 = v[i].mul(1 - u).add(v[i + 1].mul(u));
+            if (p) {
+                segment(p, p1);
+                ctx.strokeStyle = `alpha(from #fff / ${
+                    t >= h[0].t
+                    ? 0.8 * (t1 - pt) / (t1 - t)
+                    : 0.2 * (t1 - pt) / b.at})`;
+                    ctx.lineWidth = 16;
+            }
+            else {
+                const r = (h[h.length - 1].t - t) / b.at;
+                ctx.strokeStyle = `alpha(from #fff / ${r * 8})`;
+                ctx.lineWidth = 18 - 6 * (t - Math.floor(t));
+                circ(p1, 24 - 8 * (t - Math.floor(t)));
+            }
+            ctx.stroke();
+            if (e)
+                return;
+            ctx.beginPath();
+            p = p1;
+            pt = ct;
+            if ((ct += 0.5) >= t1) {
+                ct = t1;
+                e = true;
+            }
+        }
+        segment(p!, v[i + 1]);
+        p = v[i + 1];
+    }
+    ctx.strokeStyle = `alpha(from #fff / ${
+        t >= h[0].t
+        ? 0.8 * (t1 - pt) / (t1 - t)
+        : 0.2 * (t1 - pt) / b.at})`;
+        ctx.lineWidth = 16;
+    ctx.stroke();
+}
+
 function render_beatmap(b: Beatmap, t: number) {
     const {x, y, o} = stamp(b.trail, t);
     let cx = x, cy = y;
@@ -171,36 +231,8 @@ function render_beatmap(b: Beatmap, t: number) {
     mctx.moveTo(50 * x, 50 * y);
     mctx.lineTo(50 * (x + Math.cos(deg2rad(o))), 50 * (y + Math.sin(deg2rad(o))));
     mctx.stroke();
-    ctx.lineWidth = 16;
-    for (const h of b.holds) {
-        if (!h || t >= h[h.length - 1].t)
-            continue;
-        let p: Vec3 | null = t < h[0].t ? hold_at(h, h[0].t, b.trail).sub(new Vec3(x, y)).pm().rotY(-o) : null;
-        for (let i = 0; ; i++) {
-            let ht = t + i / 2;
-            if (ht >= t + b.at * 2)
-                break;
-            if (ht < h[0].t)
-                continue;
-            if (ht >= h[h.length - 1].t)
-                ht = h[h.length - 1].t
-            const p1 = hold_at(h, ht, b.trail).sub(new Vec3(x, y)).pm().rotY(-o);
-            if (p) {
-                ctx.strokeStyle = `alpha(from #fff / ${(t >= h[0].t ? 1 : 0.6) * (1 - (ht - t) / (b.at))})`;
-                ctx.beginPath();
-                segment(p, p1);
-                ctx.stroke();
-            }
-            p = p1;
-        }
-        if (t >= h[0].t) {
-            const r = (h[h.length - 1].t - t) / b.at;
-            ctx.strokeStyle = `alpha(from #fff / ${r < 0.2 ? r / 0.2 : 1})`;
-            ctx.lineWidth = 18 - 6 * (t - Math.floor(t));
-            circ(hold_at(h, t, b.trail).sub(new Vec3(x, y)).pm().rotY(-o), 24 - 8 * (t - Math.floor(t)));
-            ctx.stroke();
-        }
-    }
+    for (const h of b.holds)
+        render_hold(h, b, x, y, o);
     for (let i = b.notes.length - 1; i >= 0; i--) {
         render_note(b.notes[i], t, b.at, x, y, o);
     }

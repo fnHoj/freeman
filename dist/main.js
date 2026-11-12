@@ -15,11 +15,16 @@ load_song("UmiyuriKaiteitan").then(async (s) => {
         source.buffer = audioBuffer;
         source.connect(audioContext.destination);
         source.playbackRate.value = speed;
-        startTime = audioContext.currentTime * speed - offset;
-        if (offset > 0)
+        startTime = audioContext.currentTime - offset / speed;
+        try {
             source.start(0, offset);
-        else
-            source.start(startTime / speed, 0);
+        }
+        catch (e) {
+            try {
+                source.start(startTime, 0);
+            }
+            catch (e) { }
+        }
         pi.checked = playing = true;
     }
     function stop() {
@@ -86,7 +91,7 @@ load_song("UmiyuriKaiteitan").then(async (s) => {
         requestAnimationFrame(frame);
         render_beatmap(s.diffs[0], t);
         if (playing)
-            ti.value = t = (1000 * (audioContext.currentTime * speed - startTime) - s.offset) * (s.bpm / 60000);
+            ti.value = t = (1000 * (audioContext.currentTime - startTime) * speed - s.offset) * (s.bpm / 60000);
     }
     frame();
 });
