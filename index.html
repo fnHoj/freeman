@@ -24,7 +24,9 @@
         #p, #s12, #s34, #s1, #s54, #s32 {
             display: none;
         }
-        label {
+        label, select {
+            font-size: inherit;
+            border: none;
             display: inline-block;
             background-color: #333;
             border-radius: 4px;
@@ -104,6 +106,7 @@
     <label id="sl1" for="s1"></label>
     <label id="sl54" for="s54"></label>
     <label id="sl32" for="s32"></label>
+    <select id="diff"></select>
     <canvas id="map" width="350px" height="350px"></canvas>
 
     <script src="dist/vec.js"></script>

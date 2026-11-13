@@ -1,6 +1,7 @@
 "use strict";
 const ti = document.getElementById("t");
 const pi = document.getElementById("p");
+const diff = document.getElementById("diff");
 let t = Number.parseFloat(ti.value);
 let playing = false;
 let startTime = -Infinity;
@@ -41,6 +42,7 @@ load_song("UmiyuriKaiteitan").then(async (s) => {
         }
         pi.checked = playing = false;
     }
+    diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}">${b.name.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</option>`).join();
     const buf = await fetch(`/assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
     audioBuffer = await audioContext.decodeAudioData(buf);
     ti.addEventListener("input", () => {
@@ -89,7 +91,7 @@ load_song("UmiyuriKaiteitan").then(async (s) => {
     });
     function frame() {
         requestAnimationFrame(frame);
-        render_beatmap(s.diffs[0], t);
+        render_beatmap(s.diffs[Number.parseInt(diff.value)], t);
         if (playing)
             ti.value = t = (1000 * (audioContext.currentTime - startTime) * speed - s.offset) * (s.bpm / 60000);
     }
