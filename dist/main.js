@@ -17,7 +17,7 @@ function difficulty(d) {
     return `${Math.round(d * 2) >> 1}${Math.round(d * 2) & 1 ? "+" : ""}`;
 }
 function escapeHTML(s) {
-    return s.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+    return new String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 }
 async function songlist() {
     let s = "<h1>FREEMAN</h1>";
@@ -66,6 +66,7 @@ async function init_song(s, d) {
         if (playing)
             ti.value = t = (1000 * (audioContext.currentTime - startTime) * speed - s.offset) * (s.bpm / 60000);
     }
+    document.title = `${s.title} - 自由度人`;
     diff.classList.add(`rank-${s.diffs[d].rank}`);
     diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="rank-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option><optgroup label="谱师：${escapeHTML(b.mapper)}"></optgroup>`).join();
     title.innerHTML = `${escapeHTML(s.artist)} · <b>${escapeHTML(s.title)}</b>`;
