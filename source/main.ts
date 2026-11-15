@@ -34,7 +34,7 @@ async function songlist() {
             escapeHTML(data.artist)
         }</p><p class="diffrow">${
             (data.diffs as {diff: number, rank: number}[]).map(d =>
-                `<span class="diff diff-${d.rank}">${difficulty(d.diff)}</span>`).join(" ")
+                `<span class="diff rank-${d.rank}">${difficulty(d.diff)}</span>`).join(" ")
         }</p></a>`;
     }
     console.log(songselect.innerHTML = s);
@@ -74,9 +74,9 @@ async function init_song(s: Song, d: number) {
             ti.value = t = (1000 * (audioContext.currentTime - startTime) * speed - s.offset) * (s.bpm / 60000) as any;
     }
 
-    diff.classList.add(`diff-${s.diffs[d].rank}`);
-    diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="diff-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option>`).join();
-    title.innerHTML = `${escapeHTML(s.artist)} - <b>${escapeHTML(s.title)}</b>`;
+    diff.classList.add(`rank-${s.diffs[d].rank}`);
+    diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="rank-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option><optgroup label="谱师：${escapeHTML(b.mapper)}"></optgroup>`).join();
+    title.innerHTML = `${escapeHTML(s.artist)} · <b>${escapeHTML(s.title)}</b>`;
     const buf = await fetch(`/assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
     audioBuffer = await audioContext.decodeAudioData(buf);
     ti.min = s.start as any;
@@ -92,9 +92,9 @@ async function init_song(s: Song, d: number) {
     ti.addEventListener("dblclick", () => playing ? stop() : play());
     pi.addEventListener("input", () => (playing = pi.checked) ? play() : stop());
     diff.addEventListener("input", () => {
-        diff.classList.remove(`diff-${s.diffs[d].rank}`);
+        diff.classList.remove(`rank-${s.diffs[d].rank}`);
         d = Number.parseInt(location.hash = diff.value);
-        diff.classList.add(`diff-${s.diffs[d].rank}`);
+        diff.classList.add(`rank-${s.diffs[d].rank}`);
     });
     document.getElementById("s12")!.addEventListener("input", () => {
         speed = 0.5;
