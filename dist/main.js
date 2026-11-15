@@ -42,7 +42,7 @@ load_song("UmiyuriKaiteitan").then(async (s) => {
         }
         pi.checked = playing = false;
     }
-    diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}">${b.name.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</option>`).join();
+    diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}">${b.name.replace(/&/g, "&amp;").replace(/</g, "&lt;")} ${b.diff}</option>`).join();
     const buf = await fetch(`/assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
     audioBuffer = await audioContext.decodeAudioData(buf);
     ti.addEventListener("input", () => {
