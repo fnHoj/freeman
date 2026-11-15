@@ -112,18 +112,22 @@ class Song {
     music: string;
     bpm: number;
     offset: number;
+    start: number;
+    end: number;
     x: number;
     y: number;
     o: number;
     diffs: Beatmap[];
 
     constructor(title: string, artist: string, music: string, bpm: number, offset: number,
-            x: number, y: number, o: number, diffs: Beatmap[] = []) {
+            start: number, end: number, x: number, y: number, o: number, diffs: Beatmap[] = []) {
         this.title = title;
         this.artist = artist;
         this.music = music;
         this.bpm = bpm;
         this.offset = offset;
+        this.start = start;
+        this.end = end;
         this.x = x;
         this.y = y;
         this.o = o;
@@ -155,7 +159,7 @@ class Beatmap {
 
 async function load_song(name: string): Promise<Song> {
     const data = await fetch(`/beatmaps/${encodeURIComponent(name)}/index.json`).then(res => res.json());
-    const song = new Song(data.title, data.artist, data.music, data.bpm, data.offset, data.x, data.y, data.o);
+    const song = new Song(data.title, data.artist, data.music, data.bpm, data.offset, data.start, data.end, data.x, data.y, data.o);
     for (const diff of data.diffs) {
         const bdata = await fetch(`/beatmaps/${encodeURIComponent(name)}/${encodeURIComponent(diff)}.json`).then(res => res.json());
         const beatmap = new Beatmap(diff, bdata.name, bdata.diff, bdata.mapper, bdata.ar / (60000 / song.bpm));

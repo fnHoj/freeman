@@ -64,6 +64,8 @@ async function init_song(s, d) {
     diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""}>${escapeHTML(b.name)} ${b.diff}</option>`).join();
     const buf = await fetch(`/assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
     audioBuffer = await audioContext.decodeAudioData(buf);
+    ti.min = ti.value = s.start;
+    ti.max = s.end;
     ti.addEventListener("input", () => {
         t = Number.parseFloat(ti.value);
         if (playing) {
