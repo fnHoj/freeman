@@ -1,0 +1,14 @@
+{
+    "title": "月光",
+    "artist": "V.I.P",
+    "cover": "Gekkou.png",
+    "music": "Gekkou.mp3",
+    "bpm": 195,
+    "offset": 2500,
+    "start": -8,
+    "end": 469,
+    "x": 3.5,
+    "y": 3.5,
+    "o": 45,
+    "diffs": ["freedom"]
+}

@@ -1,9 +1,12 @@
 {
     "title": "ウミユリ海底譚",
     "artist": "n-buna",
+    "cover": "UmiyuriKaiteitan.jpeg",
     "music": "UmiyuriKaiteitan.mp3",
     "bpm": 240,
     "offset": 2000,
+    "start": -8,
+    "end": 536,
     "x": 2.6,
     "y": 0.3,
     "o": 165,

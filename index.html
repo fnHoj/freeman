@@ -12,6 +12,41 @@
             font-size: 24px;
             user-select: none;
         }
+        a {
+            color: inherit;
+        }
+        h2, p {
+            margin: 0;
+        }
+        #songselect {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: start;
+            justify-content: center;
+        }
+        #songselect > a {
+            background-color: #222;
+            margin: 0.5em;
+            padding-block-end: 0.25em;
+            box-shadow: 0.25em 0.25em 1em #0006;
+            border-radius: 0.5em;
+            overflow: hidden;
+            inline-size: 320px;
+            text-decoration: none;
+            block-size: max-content;
+            transition: 0.3s ease;
+            transition-property: background-color, transform;
+        }
+        #songselect > a:hover {
+            background-color: #333;
+            transform: translateY(-0.25em);
+        }
+        #songselect > a > img {
+            inline-size: 100%;
+        }
+        #player {
+            display: none;
+        }
         canvas {
             border: 1px solid #fff;
             margin-inline: auto;
@@ -25,12 +60,13 @@
             display: none;
         }
         label, select {
-            font-size: inherit;
+            font: inherit;
             border: none;
             display: inline-block;
             background-color: #333;
             border-radius: 4px;
             block-size: 1.5em;
+            box-sizing: content-box;
             padding-block: 0.1em;
             padding-inline: 0.25em;
             vertical-align: middle;
@@ -92,22 +128,26 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas" width="1280px" height="720px"></canvas>
-    <input id="t" type="range" min="-8" max="532" step="0.1" value="-8"/>
-    <input id="p" type="checkbox"/>
-    <input id="s12" name="s" type="radio"/>
-    <input id="s34" name="s" type="radio"/>
-    <input id="s1" name="s" type="radio" checked="checked"/>
-    <input id="s54" name="s" type="radio"/>
-    <input id="s32" name="s" type="radio"/>
-    <label id="pl" for="p"></label>
-    <label id="sl12" for="s12"></label>
-    <label id="sl34" for="s34"></label>
-    <label id="sl1" for="s1"></label>
-    <label id="sl54" for="s54"></label>
-    <label id="sl32" for="s32"></label>
-    <select id="diff"></select>
-    <canvas id="map" width="350px" height="350px"></canvas>
+    <div id="songselect"></div>
+    <div id="player">
+        <canvas id="canvas" width="1280px" height="720px"></canvas>
+        <input id="t" type="range" min="-8" max="532" step="0.1" value="-8"/>
+        <input id="p" type="checkbox"/>
+        <input id="s12" name="s" type="radio"/>
+        <input id="s34" name="s" type="radio"/>
+        <input id="s1" name="s" type="radio" checked="checked"/>
+        <input id="s54" name="s" type="radio"/>
+        <input id="s32" name="s" type="radio"/>
+        <label id="pl" for="p"></label>
+        <label id="sl12" for="s12"></label>
+        <label id="sl34" for="s34"></label>
+        <label id="sl1" for="s1"></label>
+        <label id="sl54" for="s54"></label>
+        <label id="sl32" for="s32"></label>
+        <select id="diff"></select>
+        <canvas id="map" width="350px" height="350px"></canvas>
+        <a href=".">← 乐曲选择</a>
+    </div>
 
     <script src="dist/vec.js"></script>
     <script src="dist/beatmap.js"></script>
