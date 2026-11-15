@@ -19,7 +19,7 @@ function difficulty(d: number): string {
 }
 
 function escapeHTML(s: any): string {
-    return s.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+    return new String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 }
 
 async function songlist() {
