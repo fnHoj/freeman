@@ -12,12 +12,16 @@ const audioContext = new AudioContext();
 let audioBuffer: AudioBuffer | null = null;
 let source: AudioBufferSourceNode | null = null;
 
+function difficulty(d: number): string {
+    return `${Math.round(d * 2) >> 1}${Math.round(d * 2) & 1 ? "+" : ""}`;
+}
+
 function escapeHTML(s: any): string {
     return s.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 }
 
 async function songlist() {
-    let s = "";
+    let s = "<h1>FREEMAN</h1>";
     for (const song of await fetch("/beatmaps/songs.json").then(res => res.json()) as string[]) {
         const data = await fetch(`/beatmaps/${encodeURIComponent(song)}/index.json`).then(res => res.json());
         s += `<a href="?s=${escapeHTML(encodeURIComponent(song))}#0"><img src="/assets/cover/${data.cover}"/><h2>${escapeHTML(data.title)}</h2><p>${escapeHTML(data.artist)}</p></a>`;
@@ -59,11 +63,12 @@ async function init_song(s: Song, d: number) {
             ti.value = t = (1000 * (audioContext.currentTime - startTime) * speed - s.offset) * (s.bpm / 60000) as any;
     }
 
-    diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""}>${escapeHTML(b.name)} ${b.diff}</option>`).join();
+    diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""}>${escapeHTML(b.name)} ${difficulty(b.diff)}</option>`).join();
     const buf = await fetch(`/assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
     audioBuffer = await audioContext.decodeAudioData(buf);
-    ti.min = ti.value = s.start as any;
+    ti.min = s.start as any;
     ti.max = s.end as any;
+    ti.value = (t = s.start) as any;
     ti.addEventListener("input", () => {
         t = Number.parseFloat(ti.value);
         if (playing) {
