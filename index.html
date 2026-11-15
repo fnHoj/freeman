@@ -49,6 +49,34 @@
         #songselect > a > img {
             inline-size: 100%;
         }
+        .diffrow {
+            font-size: 50%;
+            margin-block-start: 0.5em;
+        }
+        .diff {
+            font-weight: bold;
+            display: inline-block;
+            padding-inline: 0.5em;
+            padding-block: 0.25em;
+            border-radius: 4px;
+            background: #000;
+        }
+        .diff-0 {
+            background-color: #270;
+        }
+        .diff-1 {
+            background-color: #860;
+        }
+        .diff-2 {
+            background-color: #920;
+        }
+        .diff-3 {
+            background-color: #70a;
+        }
+        .diff-4 {
+            background-color: #daf;
+            color: #000;
+        }
         #player {
             display: none;
         }
@@ -135,6 +163,7 @@
 <body>
     <div id="songselect"></div>
     <div id="player">
+        <p id="title"></p>
         <canvas id="canvas" width="1280px" height="720px"></canvas>
         <input id="t" type="range" step="0.1"/>
         <input id="p" type="checkbox"/>

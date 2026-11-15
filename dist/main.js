@@ -4,6 +4,7 @@ const pi = document.getElementById("p");
 const diff = document.getElementById("diff");
 const songselect = document.getElementById("songselect");
 const player = document.getElementById("player");
+const title = document.getElementById("title");
 let t = Number.parseFloat(ti.value);
 let playing = false;
 let startTime = -Infinity;
@@ -21,9 +22,9 @@ async function songlist() {
     let s = "<h1>FREEMAN</h1>";
     for (const song of await fetch("/beatmaps/songs.json").then(res => res.json())) {
         const data = await fetch(`/beatmaps/${encodeURIComponent(song)}/index.json`).then(res => res.json());
-        s += `<a href="?s=${escapeHTML(encodeURIComponent(song))}#0"><img src="/assets/cover/${data.cover}"/><h2>${escapeHTML(data.title)}</h2><p>${escapeHTML(data.artist)}</p></a>`;
+        s += `<a href="?s=${escapeHTML(encodeURIComponent(song))}"><img src="/assets/cover/${data.cover}"/><h2>${escapeHTML(data.title)}</h2><p>${escapeHTML(data.artist)}</p><p class="diffrow">${data.diffs.map(d => `<span class="diff diff-${d.rank}">${difficulty(d.diff)}</span>`).join(" ")}</p></a>`;
     }
-    songselect.innerHTML = s;
+    console.log(songselect.innerHTML = s);
 }
 async function init_song(s, d) {
     function play() {
@@ -64,7 +65,8 @@ async function init_song(s, d) {
         if (playing)
             ti.value = t = (1000 * (audioContext.currentTime - startTime) * speed - s.offset) * (s.bpm / 60000);
     }
-    diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""}>${escapeHTML(b.name)} ${difficulty(b.diff)}</option>`).join();
+    diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="diff-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option>`).join();
+    title.innerHTML = `${escapeHTML(s.artist)} - <b>${escapeHTML(s.title)}</b>`;
     const buf = await fetch(`/assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
     audioBuffer = await audioContext.decodeAudioData(buf);
     ti.min = s.start;

@@ -10,5 +10,20 @@
     "x": 2.6,
     "y": 0.3,
     "o": 165,
-    "diffs": ["basic", "freedom"]
+    "diffs": [
+        {
+            "id": "basic",
+            "name": "BASIC",
+            "diff": 6,
+            "rank": 1,
+            "mapper": "叶帅"
+        },
+        {
+            "id": "freedom",
+            "name": "FREEDOM",
+            "diff": 13,
+            "rank": 3,
+            "mapper": "叶帅"
+        }
+    ]
 }

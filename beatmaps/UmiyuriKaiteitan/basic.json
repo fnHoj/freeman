@@ -1,7 +1,4 @@
 {
-    "name": "BASIC",
-    "diff": 6,
-    "mapper": "",
     "ar": 1000,
     "trail": [
         {"t": -4, "v": 0},

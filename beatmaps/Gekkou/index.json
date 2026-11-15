@@ -10,5 +10,13 @@
     "x": 2.5,
     "y": 6.5,
     "o": -30,
-    "diffs": ["freedom"]
+    "diffs": [
+        {
+            "id": "freedom",
+            "name": "FREEDOM",
+            "diff": 13.5,
+            "rank": 3,
+            "mapper": "叶帅"
+        }
+    ]
 }

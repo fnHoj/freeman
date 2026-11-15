@@ -139,16 +139,18 @@ class Beatmap {
     id: string;
     name: string;
     diff: number;
+    rank: number;
     mapper: string;
     at: number;
     trail: TrailNode[];
     notes: Note[];
     holds: Direction[][];
 
-    constructor(id: string, name: string, diff: number, mapper: string, ar: number) {
+    constructor(id: string, name: string, diff: number, rank: number, mapper: string, ar: number) {
         this.id = id;
         this.name = name;
         this.diff = diff;
+        this.rank = rank;
         this.mapper = mapper;
         this.at = ar;
         this.trail = [];
@@ -161,8 +163,8 @@ async function load_song(name: string): Promise<Song> {
     const data = await fetch(`/beatmaps/${encodeURIComponent(name)}/index.json`).then(res => res.json());
     const song = new Song(data.title, data.artist, data.music, data.bpm, data.offset, data.start, data.end, data.x, data.y, data.o);
     for (const diff of data.diffs) {
-        const bdata = await fetch(`/beatmaps/${encodeURIComponent(name)}/${encodeURIComponent(diff)}.json`).then(res => res.json());
-        const beatmap = new Beatmap(diff, bdata.name, bdata.diff, bdata.mapper, bdata.ar / (60000 / song.bpm));
+        const bdata = await fetch(`/beatmaps/${encodeURIComponent(name)}/${encodeURIComponent(diff.id)}.json`).then(res => res.json());
+        const beatmap = new Beatmap(diff.id, diff.name, diff.diff, diff.rank, diff.mapper, bdata.ar / (60000 / song.bpm));
         let x = song.x, y = song.y, o = song.o, t = -1e4, c = Math.cos(deg2rad(song.o)), s = Math.sin(deg2rad(song.o));
         let v = 0, w = 0;
         for (const n of bdata.trail) {
