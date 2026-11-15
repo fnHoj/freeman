@@ -12,8 +12,8 @@
     "o": 165,
     "diffs": [
         {
-            "id": "basic",
-            "name": "BASIC",
+            "id": "constraint",
+            "name": "CONSTRAINT",
             "diff": 6,
             "rank": 1,
             "mapper": "叶帅"

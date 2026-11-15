@@ -4,6 +4,7 @@ const diff = document.getElementById("diff") as HTMLSelectElement;
 const songselect = document.getElementById("songselect") as HTMLDivElement;
 const player = document.getElementById("player") as HTMLDivElement;
 const title = document.getElementById("title") as HTMLParagraphElement;
+let d = Number.parseInt(location.hash.slice(1));
 let t = Number.parseFloat(ti.value);
 let playing = false;
 let startTime = -Infinity;
@@ -68,11 +69,12 @@ async function init_song(s: Song, d: number) {
     }
     function frame() {
         requestAnimationFrame(frame);
-        render_beatmap(s.diffs[Number.parseInt(diff.value)], t);
+        render_beatmap(s.diffs[d], t);
         if (playing)
             ti.value = t = (1000 * (audioContext.currentTime - startTime) * speed - s.offset) * (s.bpm / 60000) as any;
     }
 
+    diff.classList.add(`diff-${s.diffs[d].rank}`);
     diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="diff-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option>`).join();
     title.innerHTML = `${escapeHTML(s.artist)} - <b>${escapeHTML(s.title)}</b>`;
     const buf = await fetch(`/assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
@@ -89,7 +91,11 @@ async function init_song(s: Song, d: number) {
     });
     ti.addEventListener("dblclick", () => playing ? stop() : play());
     pi.addEventListener("input", () => (playing = pi.checked) ? play() : stop());
-    diff.addEventListener("input", () => location.hash = diff.value);
+    diff.addEventListener("input", () => {
+        diff.classList.remove(`diff-${s.diffs[d].rank}`);
+        d = Number.parseInt(location.hash = diff.value);
+        diff.classList.add(`diff-${s.diffs[d].rank}`);
+    });
     document.getElementById("s12")!.addEventListener("input", () => {
         speed = 0.5;
         if (playing) {
@@ -131,8 +137,10 @@ async function init_song(s: Song, d: number) {
 function init() {
     const name = new URLSearchParams(location.search).get("s");
     if (name)
-        load_song(name).then(s => {
-            init_song(s, Number.parseInt(location.hash.slice(1)));
+        load_song(name).then(async s => {
+            if (!s.diffs[d])
+                d = s.diffs.length - 1;
+            await init_song(s, d);
             songselect.style.display = "none";
             player.style.display = "block";
         }).catch(songlist);
