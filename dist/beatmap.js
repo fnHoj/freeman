@@ -148,10 +148,10 @@ class Beatmap {
 }
 ;
 async function load_song(name) {
-    const data = await fetch(`/beatmaps/${encodeURIComponent(name)}/index.json`).then(res => res.json());
+    const data = await fetch(`beatmaps/${encodeURIComponent(name)}/index.json`).then(res => res.json());
     const song = new Song(data.title, data.artist, data.music, data.bpm, data.offset, data.start, data.end, data.x, data.y, data.o);
     for (const diff of data.diffs) {
-        const bdata = await fetch(`/beatmaps/${encodeURIComponent(name)}/${encodeURIComponent(diff.id)}.json`).then(res => res.json());
+        const bdata = await fetch(`beatmaps/${encodeURIComponent(name)}/${encodeURIComponent(diff.id)}.json`).then(res => res.json());
         const beatmap = new Beatmap(diff.id, diff.name, diff.diff, diff.rank, diff.mapper, bdata.ar / (60000 / song.bpm));
         let x = song.x, y = song.y, o = song.o, t = -1e4, c = Math.cos(deg2rad(song.o)), s = Math.sin(deg2rad(song.o));
         let v = 0, w = 0;

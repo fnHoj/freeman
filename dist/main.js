@@ -21,9 +21,9 @@ function escapeHTML(s) {
 }
 async function songlist() {
     let s = "<h1>FREEMAN</h1>";
-    for (const song of await fetch("/beatmaps/songs.json").then(res => res.json())) {
-        const data = await fetch(`/beatmaps/${encodeURIComponent(song)}/index.json`).then(res => res.json());
-        s += `<a href="?s=${escapeHTML(encodeURIComponent(song))}"><img src="/assets/cover/${data.cover}"/><h2>${escapeHTML(data.title)}</h2><p>${escapeHTML(data.artist)}</p><p class="diffrow">${data.diffs.map(d => `<span class="diff rank-${d.rank}">${difficulty(d.diff)}</span>`).join(" ")}</p></a>`;
+    for (const song of await fetch("beatmaps/songs.json").then(res => res.json())) {
+        const data = await fetch(`beatmaps/${encodeURIComponent(song)}/index.json`).then(res => res.json());
+        s += `<a href="?s=${escapeHTML(encodeURIComponent(song))}"><img src="assets/cover/${data.cover}"/><h2>${escapeHTML(data.title)}</h2><p>${escapeHTML(data.artist)}</p><p class="diffrow">${data.diffs.map(d => `<span class="diff rank-${d.rank}">${difficulty(d.diff)}</span>`).join(" ")}</p></a>`;
     }
     console.log(songselect.innerHTML = s);
 }
@@ -69,7 +69,7 @@ async function init_song(s, d) {
     diff.classList.add(`rank-${s.diffs[d].rank}`);
     diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="rank-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option><optgroup label="谱师：${escapeHTML(b.mapper)}"></optgroup>`).join();
     title.innerHTML = `${escapeHTML(s.artist)} · <b>${escapeHTML(s.title)}</b>`;
-    const buf = await fetch(`/assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
+    const buf = await fetch(`assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
     audioBuffer = await audioContext.decodeAudioData(buf);
     ti.min = s.start;
     ti.max = s.end;
