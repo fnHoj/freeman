@@ -78,8 +78,6 @@ async function init_song(s: Song, d: number) {
     diff.classList.add(`rank-${s.diffs[d].rank}`);
     diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="rank-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option><optgroup label="谱师：${escapeHTML(b.mapper)}"></optgroup>`).join();
     title.innerHTML = `${escapeHTML(s.artist)} · <b>${escapeHTML(s.title)}</b>`;
-    const buf = await fetch(`assets/music/${encodeURIComponent(s.music)}`).then(res => res.arrayBuffer());
-    audioBuffer = await audioContext.decodeAudioData(buf);
     ti.min = s.start as any;
     ti.max = s.end as any;
     ti.value = (t = s.start) as any;
@@ -132,6 +130,9 @@ async function init_song(s: Song, d: number) {
             play();
         }
     });
+    audioBuffer = await fetch(`assets/music/${encodeURIComponent(s.music)}`)
+        .then(res => res.arrayBuffer())
+        .then(buf => audioContext.decodeAudioData(buf));
     frame();
 }
 
