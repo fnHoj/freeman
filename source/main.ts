@@ -1,5 +1,6 @@
 const ti = document.getElementById("t") as HTMLInputElement;
 const pi = document.getElementById("p") as HTMLInputElement;
+const hi = document.getElementById("h") as HTMLInputElement;
 const diff = document.getElementById("diff") as HTMLSelectElement;
 const songselect = document.getElementById("songselect") as HTMLDivElement;
 const player = document.getElementById("player") as HTMLDivElement;
@@ -69,11 +70,12 @@ async function init_song(s: Song, d: number) {
     }
     function frame() {
         requestAnimationFrame(frame);
-        render_beatmap(s.diffs[d], t);
+        render_beatmap(s.diffs[d], t, hi.checked);
         if (playing)
             ti.value = t = (1000 * (audioContext.currentTime - startTime) * speed - s.offset) * (s.bpm / 60000) as any;
     }
 
+    console.log(s);
     document.title = `${s.title} - 自由度人`;
     diff.classList.add(`rank-${s.diffs[d].rank}`);
     diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="rank-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option><optgroup label="谱师：${escapeHTML(b.mapper)}"></optgroup>`).join();

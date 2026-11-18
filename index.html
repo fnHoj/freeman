@@ -89,7 +89,7 @@
             display: block;
             inline-size: calc(100% - 16px);
         }
-        #p, #s12, #s34, #s1, #s54, #s32 {
+        #p, #h, #s12, #s34, #s1, #s54, #s32 {
             display: none;
         }
         label, select {
@@ -110,49 +110,58 @@
         label:hover {
             filter: invert(100%) brightness(75%) invert(100%);
         }
+        #pl {
+            padding-inline: 1em;
+        }
         #p:not(:checked) ~ #pl::before {
             content: "▶︎ 播放";
         }
         #p:checked ~ #pl::before {
             content: "◼︎ 暂停";
         }
-        #sl12::before {
-            content: "0.5x";
+        #hl {
+            padding-inline: 0.5em;
         }
-        #sl34::before {
-            content: "0.75x";
+        #h:not(:checked) ~ #hl::before {
+            content: "显示手位";
         }
-        #sl1::before {
-            content: "1x";
+        #h:checked ~ #hl::before {
+            content: "隐藏手位";
         }
-        #sl54::before {
-            content: "1.25x";
-        }
-        #sl32::before {
-            content: "1.5x";
-        }
-        #pl {
-            padding-inline: 1em;
-        }
-        #p:checked ~ #pl {
+        #p:checked ~ #pl, #h:checked ~ #hl {
             background-color: #9cf;
             color: #000;
+        }
+        #sl12::before {
+            content: "0.5x";
         }
         #s12:checked ~ #sl12 {
             background-color: #9cf;
             color: #000;
         }
+        #sl34::before {
+            content: "0.75x";
+        }
         #s34:checked ~ #sl34 {
             background-color: #9cf;
             color: #000;
+        }
+        #sl1::before {
+            content: "1x";
         }
         #s1:checked ~ #sl1 {
             background-color: #9cf;
             color: #000;
         }
+        #sl54::before {
+            content: "1.25x";
+        }
         #s54:checked ~ #sl54 {
             background-color: #9cf;
             color: #000;
+        }
+        #sl32::before {
+            content: "1.5x";
         }
         #s32:checked ~ #sl32 {
             background-color: #9cf;
@@ -167,6 +176,7 @@
         <canvas id="canvas" width="1280px" height="720px"></canvas>
         <input id="t" type="range" step="0.1"/>
         <input id="p" type="checkbox"/>
+        <input id="h" type="checkbox"/>
         <input id="s12" name="s" type="radio"/>
         <input id="s34" name="s" type="radio"/>
         <input id="s1" name="s" type="radio" checked="checked"/>
@@ -179,6 +189,7 @@
         <label id="sl54" for="s54"></label>
         <label id="sl32" for="s32"></label>
         <select id="diff"></select>
+        <label id="hl" for="h"></label>
         <canvas id="map" width="350px" height="350px"></canvas>
         <a href=".">← 乐曲选择</a>
     </div>

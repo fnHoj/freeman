@@ -135,3 +135,18 @@ function rotZ(t) {
     t = deg2rad(t);
     return new Mat3(Math.cos(t), -Math.sin(t), 0, Math.sin(t), Math.cos(t), 0, 0, 0, 1);
 }
+function cs(Td, T2, dt) {
+    const C = Math.cosh(T2 / Td);
+    const S = Math.sinh(T2 / Td);
+    const a = dt / Td;
+    return {
+        c: (Math.cosh(a) - C) * Td / S,
+        s: (Math.sinh(a) - S * dt / T2) / (C / Td - S / T2)
+    };
+}
+function interpolate(t, Td, t0, p0, v0, t1, p1, v1) {
+    const T = t1 - t0;
+    const v = p1.sub(p0).div(T);
+    const { c, s } = cs(Td, T / 2, t - (t0 + t1) / 2);
+    return p0.add(v.mul(t - t0)).add(v1.sub(v0).mul(c / 2)).add(v0.add(v1).div(2).sub(v).mul(s));
+}

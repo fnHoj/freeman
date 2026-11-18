@@ -45,7 +45,21 @@ const SWING: Vec3[] = [
     new Vec3(0, 0, -0.12),
     new Vec3(0, -0.1, -0.06),
     new Vec3(0, -0.1, 0.14),
-]
+];
+
+function handpos(h: HandNode[], Td: number, t: number): Vec3 {
+    let i = 0;
+    while (i < h.length && h[i].t <= t)
+        i++;
+    if (!i)
+        return h[0].p.add(h[0].v.mul(Td * Math.expm1((t - h[0].t) / Td)));
+    if (i >= h.length)
+        return h[h.length - 1].p.sub(h[h.length - 1].v.mul(Td * Math.expm1((h[h.length - 1].t - t) / Td)));
+    return interpolate(t, Td,
+        h[i - 1].t, h[i - 1].p, h[i - 1].v,
+        h[i].t, h[i].p, h[i].v
+    );
+}
 
 function render_note(n: Note, t: number, ar: number, x: number, y: number, o: number) {
     const d = (n.t - t) / ar;
@@ -125,7 +139,6 @@ function render_hold(h: Direction[], b: Beatmap, x: number, y: number, o: number
     });
     let ct = t, e = false, pt = Math.max(t, h[0].t), p = t < h[0].t ? v[0] : null;
     ctx.lineWidth = 16;
-    // ctx.strokeStyle = t >= h[0].t ? "#fffc" : `alpha(from #fff / ${0.48 * (1 - (h[0].t - t) / b.at)})`;
     ctx.beginPath();
     while (ct < h[0].t)
         ct += 0.5;
@@ -171,7 +184,7 @@ function render_hold(h: Direction[], b: Beatmap, x: number, y: number, o: number
     ctx.stroke();
 }
 
-function render_beatmap(b: Beatmap, t: number) {
+function render_beatmap(b: Beatmap, t: number, hand: boolean = false) {
     const {x, y, o} = stamp(b.trail, t);
     let cx = x, cy = y;
     ctx.fillStyle = "#000";
@@ -237,8 +250,15 @@ function render_beatmap(b: Beatmap, t: number) {
     mctx.lineTo(50 * (x + Math.cos(deg2rad(o))), 50 * (y + Math.sin(deg2rad(o))));
     mctx.stroke();
     for (const h of b.holds)
-        render_hold(h, b, x, y, o);
-    for (let i = b.notes.length - 1; i >= 0; i--) {
+        render_hold(h.nodes, b, x, y, o);
+    for (let i = b.notes.length - 1; i >= 0; i--)
         render_note(b.notes[i], t, b.at, x, y, o);
+    if (hand) {
+        ctx.fillStyle = "#8fc";
+        circ(handpos(b.lh, b.at / 8, t).sub(new Vec3(x, y)).pm().rotY(-o), 14);
+        ctx.fill();
+        ctx.fillStyle = "#fc8";
+        circ(handpos(b.rh, b.at / 8, t).sub(new Vec3(x, y)).pm().rotY(-o), 14);
+        ctx.fill();
     }
 }

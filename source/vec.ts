@@ -178,3 +178,22 @@ function rotZ(t: number): Mat3 {
              0,            0,      1
     );
 }
+
+function cs(Td: number, T2: number, dt: number) {
+    const C = Math.cosh(T2 / Td);
+    const S = Math.sinh(T2 / Td);
+    const a = dt / Td;
+    return {
+        c: (Math.cosh(a) - C) * Td / S,
+        s: (Math.sinh(a) - S * dt / T2) / (C / Td - S / T2)
+    };
+}
+
+function interpolate(t: number, Td: number,
+        t0: number, p0: Vec3, v0: Vec3,
+        t1: number, p1: Vec3, v1: Vec3): Vec3 {
+    const T = t1 - t0;
+    const v = p1.sub(p0).div(T);
+    const {c, s} = cs(Td, T / 2, t - (t0 + t1) / 2);
+    return p0.add(v.mul(t - t0)).add(v1.sub(v0).mul(c / 2)).add(v0.add(v1).div(2).sub(v).mul(s));
+}

@@ -25,6 +25,16 @@ class Note extends Direction {
     }
 }
 
+class Hold {
+    rh: boolean;
+    nodes: Direction[];
+
+    constructor(rh: boolean, nodes: Direction[]) {
+        this.rh = rh;
+        this.nodes = nodes;
+    }
+}
+
 class TrailNode {
     x0: number;
     y0: number;
@@ -75,6 +85,18 @@ class TrailNode {
         }
         const l = (this.v0 + this.a * t / 2) * t
         return {o, x: this.x0 + l * c, y: this.y0 + l * s};
+    }
+}
+
+class HandNode {
+    t: number;
+    p: Vec3;
+    v: Vec3;
+
+    constructor(t: number, p: Vec3, v: Vec3) {
+        this.t = t;
+        this.p = p;
+        this.v = v;
     }
 }
 
@@ -144,7 +166,9 @@ class Beatmap {
     at: number;
     trail: TrailNode[];
     notes: Note[];
-    holds: Direction[][];
+    holds: Hold[];
+    lh: HandNode[]
+    rh: HandNode[]
 
     constructor(id: string, name: string, diff: number, rank: number, mapper: string, ar: number) {
         this.id = id;
@@ -156,6 +180,8 @@ class Beatmap {
         this.trail = [];
         this.notes = [];
         this.holds = [];
+        this.lh = [];
+        this.rh = [];
     }
 };
 
@@ -166,7 +192,7 @@ async function load_song(name: string): Promise<Song> {
         const bdata = await fetch(`beatmaps/${encodeURIComponent(name)}/${encodeURIComponent(diff.id)}.json`).then(res => res.json());
         const beatmap = new Beatmap(diff.id, diff.name, diff.diff, diff.rank, diff.mapper, bdata.ar / (60000 / song.bpm));
         let x = song.x, y = song.y, o = song.o, t = -1e4, c = Math.cos(deg2rad(song.o)), s = Math.sin(deg2rad(song.o));
-        let v = 0, w = 0;
+        let v = 0, w = 0, tl = -Infinity, tr = -Infinity;
         for (const n of bdata.trail) {
             const t1: number = n.t;
             const dt = t1 - t;
@@ -188,14 +214,36 @@ async function load_song(name: string): Promise<Song> {
         beatmap.trail.push(new TrailNode(x, y, 0, 0, o, 0, t, 1e4));
         for (const n of bdata.notes) {
             const {x, y, o} = stamp(beatmap.trail, n.t);
-            beatmap.notes.push(new Note(n.t, o + n.x, n.y, n.rh, n.swing, x, y));
+            let p0 = new Vec3(1, 0, 0).rotY(-n.y).rotZ(o + n.x).add(new Vec3(x, y));
+            t = n.t;
+            beatmap.notes.push(new Note(t, o + n.x, n.y, n.rh, n.swing, x, y));
+            if (t > (n.rh ? tr : tl)) {
+                (n.rh ? beatmap.rh : beatmap.lh).push(new HandNode(t, p0,
+                    (typeof n.swing === "number"
+                        ? new Vec3(0, 0, -3.2 / beatmap.at).rotX(n.swing)
+                        : new Vec3(3.2 / beatmap.at, 0, 0)
+                    ).rotY(-n.y).rotZ(o + n.x)
+                ));
+            }
             if (n.hold) {
                 const hold = [new Direction(n.t, o + n.x, n.y, x, y)];
                 for (const h of n.hold) {
                     const {x, y, o} = stamp(beatmap.trail, h.t);
+                    let p1 = new Vec3(1, 0, 0).rotY(-h.y).rotZ(o + h.x).add(new Vec3(x, y));
+                    let v = p1.sub(p0).div(h.t - t);
                     hold.push(new Direction(h.t, o + h.x, h.y, x, y));
+                    (n.rh ? beatmap.rh : beatmap.lh).push(
+                        new HandNode(t, p0, v),
+                        new HandNode(h.t, p1, v)
+                    );
+                    p0 = p1;
+                    t = h.t;
                 }
-                beatmap.holds.push(hold);
+                beatmap.holds.push(new Hold(n.rh, hold));
+                if (n.rh)
+                    tr = t;
+                else
+                    tl = t;
             }
         }
         song.diffs.push(beatmap);
