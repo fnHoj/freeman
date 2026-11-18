@@ -8,7 +8,6 @@ function circ(v, r, f = fl) {
     if (v.z <= 0)
         return;
     const p = v.proj();
-    ctx.beginPath();
     ctx.arc(640 + f * p.x, 360 + f * p.y, r, -Math.PI, Math.PI);
 }
 function segment(v0, v1, f = fl) {
@@ -145,6 +144,7 @@ function render_hold(h, b, x, y, o) {
                 const r = (h[h.length - 1].t - t) / b.at;
                 ctx.strokeStyle = `alpha(from #fff / ${r * 8})`;
                 ctx.lineWidth = 18 - 6 * (t - Math.floor(t));
+                ctx.beginPath();
                 circ(p1, 24 - 8 * (t - Math.floor(t)));
             }
             ctx.stroke();
@@ -237,11 +237,20 @@ function render_beatmap(b, t, hand = false) {
     for (let i = b.notes.length - 1; i >= 0; i--)
         render_note(b.notes[i], t, b.at, x, y, o);
     if (hand) {
+        const pl = handpos(b.lh, b.at / 8, t).sub(new Vec3(x, y)).pm().rotY(-o);
+        const pr = handpos(b.rh, b.at / 8, t).sub(new Vec3(x, y)).pm().rotY(-o);
+        ctx.fillStyle = "#0009";
+        ctx.beginPath();
+        circ(pl, 18);
+        circ(pr, 18);
+        ctx.fill();
         ctx.fillStyle = "#8fc";
-        circ(handpos(b.lh, b.at / 8, t).sub(new Vec3(x, y)).pm().rotY(-o), 14);
+        ctx.beginPath();
+        circ(pl, 14);
         ctx.fill();
         ctx.fillStyle = "#fc8";
-        circ(handpos(b.rh, b.at / 8, t).sub(new Vec3(x, y)).pm().rotY(-o), 14);
+        ctx.beginPath();
+        circ(pr, 14);
         ctx.fill();
     }
 }
