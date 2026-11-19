@@ -5,15 +5,29 @@
     "music": "WarningWarningWarning.mp3",
     "bpm": 172.0,
     "offset": -20,
-    "start": -8,
+    "start": 0,
     "end": 422,
     "x": 3.5,
     "y": 3.5,
     "o": 0.0,
     "diffs": [
         {
-            "id": "master",
-            "name": "MASTER",
+            "id": "ver1",
+            "name": "VER1",
+            "diff": 12,
+            "rank": 3,
+            "mapper": "丁教授"
+        },
+        {
+            "id": "ver2",
+            "name": "VER2",
+            "diff": 12,
+            "rank": 3,
+            "mapper": "丁教授"
+        },
+        {
+            "id": "ver3",
+            "name": "VER3",
             "diff": 12,
             "rank": 3,
             "mapper": "丁教授"
