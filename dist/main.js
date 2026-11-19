@@ -15,7 +15,9 @@ const audioContext = new AudioContext();
 let audioBuffer = null;
 let source = null;
 function difficulty(d) {
-    return `${Math.round(d * 2) >> 1}${Math.round(d * 2) & 1 ? "+" : ""}`;
+    return typeof d === "number"
+        ? `${Math.round(d * 2) >> 1}${Math.round(d * 2) & 1 ? "+" : ""}`
+        : typeof d === "string" ? d : "?";
 }
 function escapeHTML(s) {
     return new String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/'/g, "&apos;").replace(/"/g, "&quot;");
