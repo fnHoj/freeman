@@ -15,8 +15,10 @@ const audioContext = new AudioContext();
 let audioBuffer: AudioBuffer | null = null;
 let source: AudioBufferSourceNode | null = null;
 
-function difficulty(d: number): string {
-    return `${Math.round(d * 2) >> 1}${Math.round(d * 2) & 1 ? "+" : ""}`;
+function difficulty(d: any): string {
+    return typeof d === "number"
+        ? `${Math.round(d * 2) >> 1}${Math.round(d * 2) & 1 ? "+" : ""}`
+        : typeof d === "string" ? d : "?";
 }
 
 function escapeHTML(s: any): string {
