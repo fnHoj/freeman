@@ -78,7 +78,7 @@ async function init_song(s: Song, d: number) {
     }
 
     console.log(s);
-    document.title = `${s.title} - 自由度人`;
+    document.title = `${s.title} - FREEMAN`;
     diff.classList.add(`rank-${s.diffs[d].rank}`);
     diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="rank-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option><optgroup label="谱师：${escapeHTML(b.mapper)}"></optgroup>`).join();
     title.innerHTML = `${escapeHTML(s.artist)} · <b>${escapeHTML(s.title)}</b>`;
