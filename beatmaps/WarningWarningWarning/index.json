@@ -1,0 +1,22 @@
+{
+    "title": "WARNING×WARNING×WARNING",
+    "artist": "暁Records",
+    "cover": "WarningWarningWarning.png",
+    "music": "WarningWarningWarning.mp3",
+    "bpm": 172.0,
+    "offset": -20,
+    "start": -8,
+    "end": 422,
+    "x": 3.5,
+    "y": 3.5,
+    "o": 0.0,
+    "diffs": [
+        {
+            "id": "master",
+            "name": "MASTER",
+            "diff": 12,
+            "rank": 3,
+            "mapper": "丁教授"
+        }
+    ]
+}
