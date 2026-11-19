@@ -80,6 +80,12 @@
         #player {
             display: none;
         }
+        #back {
+            font-size: 75%;
+            position: absolute;
+            inset-block-start: calc(8px + 1lh / 3);
+            inset-inline-start: 12px;
+        }
         canvas {
             border: 1px solid #fff;
             margin-inline: auto;
@@ -172,6 +178,7 @@
 <body>
     <div id="songselect"></div>
     <div id="player">
+        <a id="back" href=".">← 乐曲选择</a>
         <p id="title"></p>
         <canvas id="canvas" width="1280px" height="720px"></canvas>
         <input id="t" type="range" step="0.1"/>
@@ -191,7 +198,6 @@
         <select id="diff"></select>
         <label id="hl" for="h"></label>
         <canvas id="map" width="350px" height="350px"></canvas>
-        <a href=".">← 乐曲选择</a>
     </div>
 
     <script src="dist/vec.js"></script>
