@@ -28,7 +28,7 @@ async function songlist() {
         const data = await fetch(`beatmaps/${encodeURIComponent(song)}/index.json`).then(res => res.json());
         s += `<a href="?s=${escapeHTML(encodeURIComponent(song))}"><img src="assets/cover/${data.cover}"/><h2>${escapeHTML(data.title)}</h2><p>${escapeHTML(data.artist)}</p><p class="diffrow">${data.diffs.map(d => `<span class="diff rank-${d.rank}">${difficulty(d.diff)}</span>`).join(" ")}</p></a>`;
     }
-    console.log(songselect.innerHTML = s);
+    songselect.innerHTML = s;
 }
 async function init_song(s, d) {
     function play() {
@@ -69,7 +69,6 @@ async function init_song(s, d) {
         if (playing)
             ti.value = t = (1000 * (audioContext.currentTime - startTime) * speed - s.offset) * (s.bpm / 60000);
     }
-    console.log(s);
     document.title = `${s.title} - FREEMAN`;
     diff.classList.add(`rank-${s.diffs[d].rank}`);
     diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="rank-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option><optgroup label="谱师：${escapeHTML(b.mapper)}"></optgroup>`).join();

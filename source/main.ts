@@ -40,7 +40,7 @@ async function songlist() {
                 `<span class="diff rank-${d.rank}">${difficulty(d.diff)}</span>`).join(" ")
         }</p></a>`;
     }
-    console.log(songselect.innerHTML = s);
+    songselect.innerHTML = s
 }
 
 async function init_song(s: Song, d: number) {
@@ -77,7 +77,6 @@ async function init_song(s: Song, d: number) {
             ti.value = t = (1000 * (audioContext.currentTime - startTime) * speed - s.offset) * (s.bpm / 60000) as any;
     }
 
-    console.log(s);
     document.title = `${s.title} - FREEMAN`;
     diff.classList.add(`rank-${s.diffs[d].rank}`);
     diff.innerHTML = s.diffs.map((b, i) => `<option value="${i}"${i == d ? " selected=\"selected\"" : ""} class="rank-${b.rank}">${escapeHTML(b.name)} ${difficulty(b.diff)}</option><optgroup label="谱师：${escapeHTML(b.mapper)}"></optgroup>`).join();
